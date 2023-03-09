@@ -52,6 +52,8 @@ public:
 
     void sigmoid();
 
+    void round();
+
 private:
     std::size_t dim_;
     VectorArray array_;

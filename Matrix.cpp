@@ -8,7 +8,7 @@
 
 std::random_device rd;  // Will be used to obtain a seed for the random number engine
 std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
-std::uniform_real_distribution<double> distrib(0, 1);
+std::uniform_real_distribution<double> distrib(-1.0, 1.0);
 
 VectorArray::VectorArray(const std::size_t dim) : dim_(dim){
     is_allocated_ = false;
@@ -118,7 +118,7 @@ auto Vector::get(std::size_t i)const -> double{
 
 void Vector::print()const{
     for(std::size_t i = 0; i < dim_; ++i){
-        std::cout<<" "<<array_.array_[i] <<" ";
+        std::cout<<" "<<array_.array_[i]<<" ";
     }
     std::cout<<"\n";
 }
@@ -130,7 +130,11 @@ void Vector::sigmoid(){
 }
 
 
-
+void Vector::round(){
+    for(std::size_t i = 0; i < dim_; ++i){
+        array_.array_[i] = ::round(array_.array_[i]);
+    }
+}
 
 
 Matrix::Matrix(std::size_t row_no, std::size_t col_no) :

@@ -3,16 +3,30 @@
 #include <string>
 #include <fstream>
 #include <stdexcept>
-#if 0
-std::vector<FeedForwardNetwork> create_population(std::size_t count){
+
+typedef unsigned char uchar;
+
+auto create_population(std::size_t count) -> std::vector<FeedForwardNetwork>{
     std::vector<FeedForwardNetwork> result;
     for(std::size_t i = 0; i < count; ++i){
-        FeedForwardNetwork f
-        result.push_back();
+        FeedForwardNetwork net(784,2,10);
+        result.push_back(net);
     }
+    return result;
 }
-#endif
-typedef unsigned char uchar;
+
+
+auto fitness_value(const Vector & v, std::size_t count) -> std::size_t{
+    std::string value;
+    int k = 9;
+    for(int i = 0; i < count; i++){
+        if((int)(v.get(i)) == 1 ){
+            value += std::to_string(k);
+        }
+        k--;
+    }
+    return atoi(value.c_str());
+}
 
 
 uchar* read_mnist_labels(const std::string & full_path, int& number_of_labels) {
@@ -79,8 +93,8 @@ uchar** read_mnist_images(const std::string full_path, int& number_of_images, in
     }
 }
 
+#if 1
 int main(int argc, char **argv){
-
     int count;
     int cnt;
     int sz;
@@ -90,22 +104,67 @@ int main(int argc, char **argv){
 
     std::cout<<"Count:"<<count<<"\n";
     std::cout<<"SZ:"<<sz<<"\n";
-
-
-    Vector v(784);
+    std::vector<FeedForwardNetwork> population;
+    int population_count = 0;
     for(int k = 0; k < count; k++) {
+        Vector v(784);
         FeedForwardNetwork net(784,2,10);
         auto image = images[k];
         for (std::size_t i = 0; i < 784; ++i) {
             double d = (double) (image[i]) / 255;
             v.add(i, d);
         }
-        //v.print();
-
         v = net.run(v);
-        v.print();
+        v.round();
+        if(fitness_value(v, 10) < 10 ){
+            population_count++;
+            population.push_back(net);
+            std::cout<<"PopulationCount:"<<population_count<<"\n";
+        }
+        std::cout<<"k:"<<k<<"\n";
         //std::cout << "\n" << (int) labels[0] << "\n";
     }
-
-
+    std::cout<<"Population Size:"<<population.size()<<"\n";
 }
+
+#endif
+
+#if 0
+int main(int argc,char ** argv){
+    Matrix m(5,8);
+    Vector v(8);
+    for(std::size_t i = 0; i < 8; ++i){
+        v.add(i,1.0);
+    }
+    m.fill_random();
+    m.print();
+    std::cout<<"\n\t * \n ";
+    v.print();
+    
+    std::cout<<"\n\t = \n ";
+    auto x = m * v;
+    x.print();
+    return 0;
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
